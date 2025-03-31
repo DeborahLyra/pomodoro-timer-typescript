@@ -1,5 +1,6 @@
 import { ThemeProvider } from "styled-components"
-import { defaultTheme } from "./themes/default"
+import { defaultTheme } from "./styles/themes/default"
+import { GlobalStyle } from "./styles/global"
 
 function App() {
  
@@ -7,6 +8,7 @@ function App() {
   return (
     <ThemeProvider theme={defaultTheme}>
      <button>Cicar </button>
+     <GlobalStyle/>
     </ThemeProvider>
   )
 }
