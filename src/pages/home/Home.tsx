@@ -31,6 +31,7 @@ export function Home() {
 
   const [cycles, setCycles] = useState<Cycle[]>([])
   const [activeCycleId, setActiveCycleId] = useState<string | null>(null)
+  const [amountSecondsPassed, SetAmountSecondsPassed] = useState(0) //quantos segundos se passaram para ir reduzindo
 
   const { register, handleSubmit, watch, reset } = useForm<newCycleFormDdata>({
     resolver: zodResolver(newCycleFormValidationSchema),
@@ -54,6 +55,15 @@ export function Home() {
   }
 
   const activeCycle = cycles.find((cycle)=> cycle.id === activeCycleId)
+
+  const totalSeconds = activeCycle ? activeCycle.minutesAmount * 60 : 0 //transformar para segungos o tempo
+  const currentSeconds = activeCycle ? totalSeconds - amountSecondsPassed : 0 //calcular quantos segundos se passaram
+
+  const minutesAmount = Math.floor(currentSeconds / 60) //calcular os minutos dentro dos segundos 
+  const secondsAmount = currentSeconds % 60
+
+  const minutes = String(minutesAmount).padStart(2, '0') //incluit o 0 no inicio
+  const seconds = String(secondsAmount).padStart(2, '0') //incluit o 0 no inicio
 
   const isSumitDisabled = !watch('task')
 
@@ -85,11 +95,11 @@ export function Home() {
 
 
         <CountdownContainer>
-          <span>0</span>
-          <span>0</span>
+          <span>{minutes[0]}</span>
+          <span>{minutes[1]}</span>
           <Separator>:</Separator>
-          <span>0</span>
-          <span>0</span>
+          <span>{seconds[0]}</span>
+          <span>{seconds[1]}</span>
         </CountdownContainer>
 
         <StartButton type="submit" disabled={isSumitDisabled}>
