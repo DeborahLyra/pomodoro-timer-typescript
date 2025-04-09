@@ -3,7 +3,8 @@ import { HomeContainer, FormnContainer, CountdownContainer, Separator, StartButt
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as zod from 'zod'
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { differenceInSeconds, interval } from "date-fns";
 
 /*
 o register():
@@ -25,6 +26,7 @@ interface Cycle {
   id: string;
   task: string;
   minutesAmount: number,
+  startDate: Date
 }
 
 export function Home() {
@@ -32,6 +34,8 @@ export function Home() {
   const [cycles, setCycles] = useState<Cycle[]>([])
   const [activeCycleId, setActiveCycleId] = useState<string | null>(null)
   const [amountSecondsPassed, SetAmountSecondsPassed] = useState(0) //quantos segundos se passaram para ir reduzindo
+
+  const activeCycle = cycles.find((cycle) => cycle.id === activeCycleId)
 
   const { register, handleSubmit, watch, reset } = useForm<newCycleFormDdata>({
     resolver: zodResolver(newCycleFormValidationSchema),
@@ -41,12 +45,28 @@ export function Home() {
     }
   })
 
+  useEffect(() => {
+    let interval: number;
+
+    if (activeCycle) {
+      interval = setInterval(() => {
+        SetAmountSecondsPassed(differenceInSeconds(new Date, activeCycle.startDate))
+      }, 1000)
+    }
+
+    return () => {
+      SetAmountSecondsPassed(0) //zerar os segundos que passaram
+      clearInterval(interval) //zerar o projeto que estava ativo
+    }
+  }, [activeCycle])
+
   const handleCreateNewCycle = (data: newCycleFormDdata) => {
     const id = String(new Date().getTime())
     const newCycle: Cycle = {
       id: id,
       task: data.task,
-      minutesAmount: data.minutesAmount
+      minutesAmount: data.minutesAmount,
+      startDate: new Date(),
     }
 
     setCycles(prev => [...prev, newCycle])
@@ -54,7 +74,7 @@ export function Home() {
     reset() //volta para os valores originais -> defaultValues
   }
 
-  const activeCycle = cycles.find((cycle)=> cycle.id === activeCycleId)
+
 
   const totalSeconds = activeCycle ? activeCycle.minutesAmount * 60 : 0 //transformar para segungos o tempo
   const currentSeconds = activeCycle ? totalSeconds - amountSecondsPassed : 0 //calcular quantos segundos se passaram
@@ -66,6 +86,12 @@ export function Home() {
   const seconds = String(secondsAmount).padStart(2, '0') //incluit o 0 no inicio
 
   const isSumitDisabled = !watch('task')
+
+  useEffect(()=>{
+    if(activeCycle){
+      document.title = `${minutes}:${seconds}`
+    }
+  }, [minutes, seconds, activeCycle])
 
   return (
     <HomeContainer>
