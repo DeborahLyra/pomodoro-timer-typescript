@@ -53,13 +53,13 @@ const BaseInput = styled.input`
 export const TaskInput = styled(BaseInput)`
     flex: 1;
 
-` 
+`
 
 export const MinutesInput = styled(BaseInput)`
     width:4rem;
 
    
-` 
+`
 
 export const CountdownContainer = styled.div`
     font-family: 'Roboto Mono', monospace;
@@ -87,9 +87,8 @@ export const Separator = styled.div`
     display: flex;
     justify-content: center;
 `
-
-export const StartButton = styled.button`
-    width: 100%;
+const BaseButton = styled.button`
+width: 100%;
     border: none;
     padding: 1rem;
     border-radius: 8px;
@@ -102,7 +101,10 @@ export const StartButton = styled.button`
     font-weight: bold;
 
     cursor: pointer;
+`
 
+export const StartButton = styled(BaseButton)`
+    
     background-color: ${props => props.theme["green-500"]};
     color: ${props => props.theme["gray-100"]};
 
@@ -113,5 +115,14 @@ export const StartButton = styled.button`
     &:disabled {
         opacity: 0.7;
         cursor: not-allowed;
+    }
+`
+
+export const StopButton = styled(BaseButton)`
+    background-color: ${props => props.theme["red-500"]};
+    color: ${props => props.theme["gray-100"]};
+
+    &:hover {
+        background-color: ${props => props.theme["red-700"]};
     }
 `
