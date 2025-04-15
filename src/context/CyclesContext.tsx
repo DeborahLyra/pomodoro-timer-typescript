@@ -23,6 +23,7 @@ interface CyclesContextType {
     setSecondPassed: (seconds: number) => void
     InteruptCurrentCycle: () => void
     createCreateNewCycle: (data: CreateCycleData) => void
+    cycles: Cycle[]
 }
 
 export const CyclesContext = createContext({} as CyclesContextType)
@@ -93,7 +94,8 @@ export const CyclesContexProvider = ({ children }: CycleContextProps) => {
                 amountSecondsPassed,
                 setSecondPassed,
                 createCreateNewCycle,
-                InteruptCurrentCycle
+                InteruptCurrentCycle, 
+                cycles
             }}>
             {children}
         </CyclesContext.Provider>
