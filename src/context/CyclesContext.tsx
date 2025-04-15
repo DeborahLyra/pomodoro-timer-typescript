@@ -51,7 +51,6 @@ export const CyclesContexProvider = ({ children }: CycleContextProps) => {
         setCycles(prev => [...prev, newCycle])
         setActiveCycleId(id)
         SetAmountSecondsPassed(0)
-        // reset() //volta para os valores originais -> defaultValues
     }
 
     const InteruptCurrentCycle = () => {
