@@ -38,37 +38,48 @@ interface CyclesState {
 
 }
 export const CyclesContexProvider = ({ children }: CycleContextProps) => {
-
+    
     const [cyclesState, dispatch] = useReducer((state: CyclesState, action: any) => {
-
-        if (action.type === "create_new_cycle") {
-            return {
-                ...state,
-                cycles: [...state.cycles, action.payload.newCycle ],
-                activeCycleId: action.payload.newCycle.id
-            }
-        }
-        if (action.type === "interrupt_current_cycle") {
-            return {
-                ...state,
-                cycles: [...state.cycles, 
-                    state.cycles.map(cycle => {
+        switch (action.type) {
+            case "create_new_cycle":
+                return {
+                    ...state,
+                    cycles: [...state.cycles, action.payload.newCycle],
+                    activeCycleId: action.payload.newCycle.id,
+                };
+    
+            case "interrupt_current_cycle":
+                return {
+                    ...state,
+                    cycles: state.cycles.map((cycle) => {
                         if (cycle.id === state.activeCycleId) {
-                            return { ...cycle, interruptedate: new Date() }
-                        } else {
-                            return cycle
+                            return { ...cycle, interruptedDate: new Date() };
                         }
-                    })
-                ],
-                activeCycleId: null
-            }
+                        return cycle;
+                    }),
+                    activeCycleId: null,
+                };
+    
+            case "mark_cycle_finished":
+                return {
+                    ...state,
+                    cycles: state.cycles.map((cycle) => {
+                        if (cycle.id === state.activeCycleId) {
+                            return { ...cycle, finishedDate: new Date() };
+                        }
+                        return cycle;
+                    }),
+                    activeCycleId: null,
+                };
+    
+            default:
+                return state;
         }
-
-        return state
     }, {
         cycles: [],
-        activeCycleId:  null
-    })
+        activeCycleId: null,
+    });
+    
 
     const {cycles, activeCycleId} = cyclesState
 
@@ -92,7 +103,6 @@ export const CyclesContexProvider = ({ children }: CycleContextProps) => {
             }
         })
 
-        // setCycles(prev => [...prev, newCycle])
         SetAmountSecondsPassed(0)
     }
 
@@ -115,15 +125,7 @@ export const CyclesContexProvider = ({ children }: CycleContextProps) => {
     //nova funcao para não precisar passat o setCycle
 
     const markCurrentCycleAsFinished = () => {
-        // setCycles(cycles.map(cycle => {
-        //     if (cycle.id === activeCycleId) {
-        //         return { ...cycle, finishedDate: new Date() }
-        //     } else {
-        //         return cycle
-        //     }
-        // })
-        // )
-
+       
         dispatch({
             type: "mark_cycle_finished",
             payload: {
